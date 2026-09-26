@@ -195,9 +195,22 @@ var APP_DATA = {
           "pitch": 0.7202869872024209,
           "rotation": 0,
           "target": "9-corredor"
+        },
+        {
+          "yaw": 2.1899794948229,
+          "pitch": 0.480413813486102,
+          "rotation": 0,
+          "target": "5-lavabo-1"
         }
       ],
-      "infoHotspots": []
+      "infoHotspots": [
+        {
+          "yaw": -1.5759173036131067,
+          "pitch": -0.028912798410024365,
+          "title": "Interfone",
+          "text": "<br>"
+        }
+      ]
     },
     {
       "id": "3-sala--janela",
@@ -323,7 +336,14 @@ var APP_DATA = {
           "target": "1-entrada-apartamento"
         }
       ],
-      "infoHotspots": []
+      "infoHotspots": [
+        {
+          "yaw": 0.8130716101163564,
+          "pitch": -0.021812227842158194,
+          "title": "Interfone",
+          "text": "<br>"
+        }
+      ]
     },
     {
       "id": "5-lavabo-1",
