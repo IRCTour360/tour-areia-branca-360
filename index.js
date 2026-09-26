@@ -334,20 +334,40 @@
   }
 
   // =========================================================
-  // SISTEMA DE BLOQUEIO DE CONTATO E NOTIFICAÇÃO (IGORRC)
+  // SISTEMA DE BLOQUEIO DE CONTATO, MÁSCARA E NOTIFICAÇÃO
   // =========================================================
   var contactBtn = document.getElementById('propertyContactBtn');
   var modalOverlay = document.getElementById('contactModalOverlay');
   var closeModalBtn = document.getElementById('closeContactModal');
   var leadForm = document.getElementById('leadCaptureForm');
+  var leadPhoneInput = document.getElementById('leadPhone');
   var directContactBox = document.getElementById('directContactBox');
   var modalInstruction = document.getElementById('modalInstruction');
   var referralCodeDisplay = document.getElementById('referralCodeDisplay');
   var btnWaFercol = document.getElementById('btnWaFercol');
 
-  var refCode = 'IGORRC-' + Math.floor(1000 + Math.random() * 9000);
+  // Protocolo atualizado para IRCTOUR360
+  var refCode = 'IRCTOUR360-' + Math.floor(1000 + Math.random() * 9000);
   if (referralCodeDisplay) {
     referralCodeDisplay.textContent = refCode;
+  }
+
+  // Máscara automática de telefone (DD) 99999-9999 com limite máximo de 11 dígitos
+  if (leadPhoneInput) {
+    leadPhoneInput.addEventListener('input', function(e) {
+      var digits = e.target.value.replace(/\D/g, '').slice(0, 11);
+      var formatted = '';
+      if (digits.length > 0) {
+        formatted = '(' + digits.substring(0, 2);
+      }
+      if (digits.length >= 3) {
+        formatted += ') ' + digits.substring(2, 7);
+      }
+      if (digits.length >= 8) {
+        formatted += '-' + digits.substring(7, 11);
+      }
+      e.target.value = formatted;
+    });
   }
 
   function getFercolWhatsAppUrl(visitorName, visitorPhone) {
@@ -355,7 +375,7 @@
       'Olá, Fercol Empreendimentos! Vi o Tour Virtual 360° do Residencial Areia Branca e tenho interesse no imóvel.\n\n' +
       '👤 Nome: ' + visitorName + '\n' +
       '📱 WhatsApp: ' + visitorPhone + '\n' +
-      '🔖 Protocolo de Indicação: ' + refCode + ' (Tour 360 IgorRC)'
+      '🔖 Protocolo de Indicação: ' + refCode
     );
     return 'https://wa.me/553432325154?text=' + msgFercol;
   }
@@ -396,9 +416,19 @@
     leadForm.addEventListener('submit', function(e) {
       e.preventDefault();
       var name = document.getElementById('leadName').value.trim();
-      var phone = document.getElementById('leadPhone').value.trim();
+      var phone = leadPhoneInput.value.trim();
+      var rawDigits = phone.replace(/\D/g, '');
 
-      if (!name || !phone) return;
+      // Valida se tem pelo menos 10 dígitos (DDD + número)
+      if (rawDigits.length < 10) {
+        leadPhoneInput.setCustomValidity('Por favor, digite o DDD + número válido (10 ou 11 dígitos).');
+        leadPhoneInput.reportValidity();
+        return;
+      } else {
+        leadPhoneInput.setCustomValidity('');
+      }
+
+      if (!name) return;
 
       var waUrl = getFercolWhatsAppUrl(name, phone);
       if (btnWaFercol) {
@@ -414,18 +444,24 @@
         directContactBox.style.display = 'block';
       }
 
-      // Notifica o Igor imediatamente com Nome e WhatsApp do cliente
+      // Notifica imediatamente com Nome e WhatsApp formatado do cliente
       notifyIgor('Preencheu Nome e WhatsApp e liberou contato da Fercol', name + ' | WhatsApp: ' + phone);
 
       // Redireciona automaticamente para o WhatsApp da Fercol em nova aba
       window.open(waUrl, '_blank');
     });
+
+    if (leadPhoneInput) {
+      leadPhoneInput.addEventListener('input', function() {
+        leadPhoneInput.setCustomValidity('');
+      });
+    }
   }
 
   if (btnWaFercol) {
     btnWaFercol.addEventListener('click', function() {
       var name = document.getElementById('leadName').value.trim();
-      var phone = document.getElementById('leadPhone').value.trim();
+      var phone = leadPhoneInput.value.trim();
       notifyIgor('Clicou no botão do WhatsApp da Fercol (+55 34 3232-5154)', name + ' | WhatsApp: ' + phone);
     });
   }

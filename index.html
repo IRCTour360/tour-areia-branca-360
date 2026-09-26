@@ -7,7 +7,7 @@
   
   <!-- Prévia Profissional para WhatsApp e Redes Sociais (Open Graph) -->
   <meta property="og:title" content="Tour Virtual 360° | Residencial Areia Branca" />
-  <meta property="og:description" content="Explore cada ambiente em 360°. Comercialização: Fercol Empreendimentos | Desenvolvido por IgorRC." />
+  <meta property="og:description" content="Explore cada ambiente em 360°. Comercialização: Fercol Empreendimentos | Desenvolvido por IRCTour360." />
   <meta property="og:image" content="https://irctour360.github.io/tour-areia-branca-360/tiles/2-sala/preview.jpg" />
   <meta property="og:url" content="https://irctour360.github.io/tour-areia-branca-360/" />
   <meta property="og:type" content="website" />
@@ -136,7 +136,7 @@
   </div>
 </button>
 
-<!-- Card do Desenvolvedor do Tour 360 (IgorRC) -->
+<!-- Card do Desenvolvedor do Tour 360 (Sem redundância e com WhatsApp) -->
 <a href="https://www.instagram.com/igorrc93/" target="_blank" rel="noopener noreferrer" id="creatorBadge" class="creator-badge">
   <div class="insta-icon-wrapper">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -147,11 +147,11 @@
   </div>
   <div class="creator-info">
     <span class="creator-headline">Quer criar um Tour 360° profissional do seu negócio?</span>
-    <span class="creator-name">Entre em contato com o criador: <strong>IgorRC (@igorrc93)</strong></span>
+    <span class="creator-name">Entre em contato com o criador: <strong>@igorrc93 • (34) 99184-8525</strong></span>
   </div>
 </a>
 
-<!-- Modal de Contato do Imóvel (Com bloqueio até preencher Nome e WhatsApp) -->
+<!-- Modal de Contato do Imóvel (Com máscara e limite de telefone) -->
 <div id="contactModalOverlay" class="contact-modal-overlay">
   <div class="contact-modal-card">
     <button id="closeContactModal" class="modal-close-btn">&times;</button>
@@ -160,8 +160,8 @@
     <p id="modalInstruction" class="modal-desc">Para liberar o contato oficial da <strong>Fercol Empreendimentos</strong> e iniciar seu atendimento no WhatsApp, informe seu nome e número abaixo:</p>
     
     <form id="leadCaptureForm" class="lead-form">
-      <input type="text" id="leadName" placeholder="Seu nome completo" required />
-      <input type="tel" id="leadPhone" placeholder="Seu WhatsApp com DDD (ex: 34 99999-9999)" required />
+      <input type="text" id="leadName" placeholder="Seu nome completo" maxlength="60" required />
+      <input type="tel" id="leadPhone" placeholder="Seu WhatsApp: (34) 99999-9999" maxlength="15" inputmode="numeric" required />
       <button type="submit" class="lead-submit-btn">Liberar WhatsApp da Fercol</button>
     </form>
 
@@ -169,7 +169,7 @@
     <div id="directContactBox" class="direct-contact-box" style="display: none;">
       <div class="protocol-box">
         <span>Protocolo de Indicação:</span>
-        <strong id="referralCodeDisplay">REF-IGORRC</strong>
+        <strong id="referralCodeDisplay">IRCTOUR360</strong>
       </div>
       <p class="fercol-phone-title">Contato Oficial Liberado — Fercol Empreendimentos:</p>
       <div class="fercol-phone-number">+55 34 3232-5154</div>
