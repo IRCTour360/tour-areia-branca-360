@@ -1,114 +1,111 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-<title>Project Title</title>
-<meta charset="utf-8">
-<meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
-<style> @-ms-viewport { width: device-width; } </style>
-<link rel="stylesheet" href="vendor/reset.min.css">
-<link rel="stylesheet" href="style.css">
+  <title>Tour Virtual 360° | Residencial Areia Branca - Fercol Empreendimentos</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
+  
+  <!-- Prévia Profissional para WhatsApp e Redes Sociais (Open Graph) -->
+  <meta property="og:title" content="Tour Virtual 360° | Residencial Areia Branca" />
+  <meta property="og:description" content="Explore cada ambiente em 360°. Comercialização: Fercol Empreendimentos | Desenvolvido por IgorRC." />
+  <meta property="og:image" content="https://irctour360.github.io/tour-areia-branca-360/tiles/2-sala/preview.jpg" />
+  <meta property="og:url" content="https://irctour360.github.io/tour-areia-branca-360/" />
+  <meta property="og:type" content="website" />
+
+  <style> @-ms-viewport { width: device-width; } </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="vendor/reset.min.css">
+  <link rel="stylesheet" href="style.css">
 </head>
-<body class="multiple-scenes ">
+<body class="multiple-scenes">
 
 <div id="pano"></div>
 
+<!-- Menu Lateral de Ambientes -->
 <div id="sceneList">
+  <div class="sceneListHeader">Ambientes do Imóvel</div>
   <ul class="scenes">
-    
-      <a href="javascript:void(0)" class="scene" data-id="0-elevador">
-        <li class="text">Elevador</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="1-entrada-apartamento">
-        <li class="text">Entrada Apartamento</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="2-sala">
-        <li class="text">Sala</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="3-sala--janela">
-        <li class="text">Sala / Janela</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="4-cozinha">
-        <li class="text">Cozinha</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="5-lavabo-1">
-        <li class="text">Lavabo 1</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="6-varanda--churrasqueira">
-        <li class="text">Varanda / Churrasqueira</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="7-varanda-gourmet">
-        <li class="text">Varanda Gourmet</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="8-lavanderia">
-        <li class="text">Lavanderia</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="9-corredor">
-        <li class="text">Corredor</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="10-corredor--estante">
-        <li class="text">Corredor / Estante</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="11-entrada-quarto-1">
-        <li class="text">Entrada Quarto 1</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="12-quarto-1">
-        <li class="text">Quarto 1</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="13-lavabo-2">
-        <li class="text">Lavabo 2</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="14-banheiro-2">
-        <li class="text">Banheiro 2</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="15-quarto-2">
-        <li class="text">Quarto 2</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="16-quarto-3-sute">
-        <li class="text">Quarto 3 (Suíte)</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="17-banheiro-sute">
-        <li class="text">Banheiro suíte</li>
-      </a>
-    
+    <a href="javascript:void(0)" class="scene" data-id="0-elevador">
+      <li class="text">Elevador</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="1-entrada-apartamento">
+      <li class="text">Entrada Apartamento</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="2-sala">
+      <li class="text">Sala</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="3-sala--janela">
+      <li class="text">Sala / Janela</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="4-cozinha">
+      <li class="text">Cozinha</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="5-lavabo-1">
+      <li class="text">Lavabo 1</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="6-varanda--churrasqueira">
+      <li class="text">Varanda / Churrasqueira</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="7-varanda-gourmet">
+      <li class="text">Varanda Gourmet</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="8-lavanderia">
+      <li class="text">Lavanderia</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="9-corredor">
+      <li class="text">Corredor</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="10-corredor--estante">
+      <li class="text">Corredor / Estante</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="11-entrada-quarto-1">
+      <li class="text">Entrada Quarto 1</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="12-quarto-1">
+      <li class="text">Quarto 1</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="13-lavabo-2">
+      <li class="text">Lavabo 2</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="14-banheiro-2">
+      <li class="text">Banheiro 2</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="15-quarto-2">
+      <li class="text">Quarto 2</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="16-quarto-3-sute">
+      <li class="text">Quarto 3 (Suíte)</li>
+    </a>
+    <a href="javascript:void(0)" class="scene" data-id="17-banheiro-sute">
+      <li class="text">Banheiro suíte</li>
+    </a>
   </ul>
 </div>
 
+<!-- Barra de Título Superior -->
 <div id="titleBar">
   <h1 class="sceneName"></h1>
 </div>
 
-<a href="javascript:void(0)" id="autorotateToggle">
+<!-- Botões de Controle Superiores -->
+<a href="javascript:void(0)" id="autorotateToggle" title="Giro Automático">
   <img class="icon off" src="img/play.png">
   <img class="icon on" src="img/pause.png">
 </a>
 
-<a href="javascript:void(0)" id="fullscreenToggle">
+<a href="javascript:void(0)" id="fullscreenToggle" title="Tela Cheia">
   <img class="icon off" src="img/fullscreen.png">
   <img class="icon on" src="img/windowed.png">
 </a>
 
-<a href="javascript:void(0)" id="sceneListToggle">
+<a href="javascript:void(0)" id="sceneListToggle" title="Menu de Ambientes">
   <img class="icon off" src="img/expand.png">
   <img class="icon on" src="img/collapse.png">
 </a>
 
+<!-- Botões de Direção (Opcional) -->
 <a href="javascript:void(0)" id="viewUp" class="viewControlButton viewControlButton-1">
   <img class="icon" src="img/up.png">
 </a>
@@ -128,9 +125,73 @@
   <img class="icon" src="img/minus.png">
 </a>
 
-<script src="vendor/screenfull.min.js" ></script>
-<script src="vendor/bowser.min.js" ></script>
-<script src="vendor/marzipano.js" ></script>
+<!-- Botão Flutuante de Interesse no Imóvel (Fercol Empreendimentos) -->
+<button id="propertyContactBtn" class="floating-cta-btn">
+  <span class="cta-pulse"></span>
+  <svg class="cta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+  </svg>
+  <div class="cta-text-group">
+    <span class="cta-label">Interesse no Imóvel?</span>
+    <span class="cta-sub">Fercol Empreendimentos</span>
+  </div>
+</button>
+
+<!-- Card do Desenvolvedor do Tour 360 (IgorRC) -->
+<a href="https://www.instagram.com/igorrc93/" target="_blank" rel="noopener noreferrer" id="creatorBadge" class="creator-badge">
+  <div class="insta-icon-wrapper">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+    </svg>
+  </div>
+  <div class="creator-info">
+    <span class="creator-headline">Quer um Tour 360° profissional do seu negócio?</span>
+    <span class="creator-name">Fale com o criador: <strong>@igorrc93 (IgorRC)</strong></span>
+  </div>
+</a>
+
+<!-- Modal de Contato do Imóvel + Registro de Indicação -->
+<div id="contactModalOverlay" class="contact-modal-overlay">
+  <div class="contact-modal-card">
+    <button id="closeContactModal" class="modal-close-btn">&times;</button>
+    <div class="modal-badge">Atendimento Oficial • Residencial Areia Branca</div>
+    <h2>Tenho Interesse neste Imóvel</h2>
+    <p class="modal-desc">Informe seu nome e telefone abaixo para liberar o atendimento direto com a <strong>Fercol Empreendimentos</strong> e gerar seu protocolo de visita:</p>
+    
+    <form id="leadCaptureForm" class="lead-form">
+      <input type="text" id="leadName" placeholder="Seu nome completo" required />
+      <input type="tel" id="leadPhone" placeholder="Seu telefone / WhatsApp (com DDD)" required />
+      <button type="submit" class="lead-submit-btn">Liberar Contato & Registrar Atendimento</button>
+    </form>
+
+    <div id="directContactBox" class="direct-contact-box">
+      <div class="protocol-box">
+        <span>Código de Indicação do Tour:</span>
+        <strong id="referralCodeDisplay">REF-IGORRC</strong>
+      </div>
+      <p class="fercol-phone-title">Central de Vendas — Fercol Empreendimentos:</p>
+      <div class="fercol-phone-number">+55 34 3232-5154</div>
+      
+      <div class="contact-actions">
+        <a href="tel:+553432325154" id="btnCallFercol" class="action-btn call-btn">
+          📞 Ligar para (34) 3232-5154
+        </a>
+        <a href="https://wa.me/553432325154" target="_blank" id="btnWaFercol" class="action-btn wa-btn">
+          💬 Chamar Fercol no WhatsApp
+        </a>
+        <a href="https://wa.me/5534991848525" target="_blank" id="btnWaIgor" class="action-btn vip-btn">
+          ⚡ Solicitar Retorno Rápido (Consultor do Tour)
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="vendor/screenfull.min.js"></script>
+<script src="vendor/bowser.min.js"></script>
+<script src="vendor/marzipano.js"></script>
 
 <script src="data.js"></script>
 <script src="index.js"></script>

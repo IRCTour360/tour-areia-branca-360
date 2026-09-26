@@ -1,18 +1,3 @@
-/*
- * Copyright 2016 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 'use strict';
 
 (function() {
@@ -21,7 +6,6 @@
   var screenfull = window.screenfull;
   var data = window.APP_DATA;
 
-  // Grab elements from DOM.
   var panoElement = document.querySelector('#pano');
   var sceneNameElement = document.querySelector('#titleBar .sceneName');
   var sceneListElement = document.querySelector('#sceneList');
@@ -30,7 +14,8 @@
   var autorotateToggleElement = document.querySelector('#autorotateToggle');
   var fullscreenToggleElement = document.querySelector('#fullscreenToggle');
 
-  // Detect desktop or mobile mode.
+  var currentSceneName = 'Elevador';
+
   if (window.matchMedia) {
     var setMode = function() {
       if (mql.matches) {
@@ -48,29 +33,24 @@
     document.body.classList.add('desktop');
   }
 
-  // Detect whether we are on a touch device.
   document.body.classList.add('no-touch');
   window.addEventListener('touchstart', function() {
     document.body.classList.remove('no-touch');
     document.body.classList.add('touch');
   });
 
-  // Use tooltip fallback mode on IE < 11.
   if (bowser.msie && parseFloat(bowser.version) < 11) {
     document.body.classList.add('tooltip-fallback');
   }
 
-  // Viewer options.
   var viewerOpts = {
     controls: {
       mouseViewMode: data.settings.mouseViewMode
     }
   };
 
-  // Initialize viewer.
   var viewer = new Marzipano.Viewer(panoElement, viewerOpts);
 
-  // Create scenes.
   var scenes = data.scenes.map(function(data) {
     var urlPrefix = "tiles";
     var source = Marzipano.ImageUrlSource.fromString(
@@ -88,13 +68,11 @@
       pinFirstLevel: true
     });
 
-    // Create link hotspots.
     data.linkHotspots.forEach(function(hotspot) {
       var element = createLinkHotspotElement(hotspot);
       scene.hotspotContainer().createHotspot(element, { yaw: hotspot.yaw, pitch: hotspot.pitch });
     });
 
-    // Create info hotspots.
     data.infoHotspots.forEach(function(hotspot) {
       var element = createInfoHotspotElement(hotspot);
       scene.hotspotContainer().createHotspot(element, { yaw: hotspot.yaw, pitch: hotspot.pitch });
@@ -107,7 +85,6 @@
     };
   });
 
-  // Set up autorotate, if enabled.
   var autorotate = Marzipano.autorotate({
     yawSpeed: 0.03,
     targetPitch: 0,
@@ -117,10 +94,8 @@
     autorotateToggleElement.classList.add('enabled');
   }
 
-  // Set handler for autorotate toggle.
   autorotateToggleElement.addEventListener('click', toggleAutorotate);
 
-  // Set up fullscreen mode, if supported.
   if (screenfull.enabled && data.settings.fullscreenButton) {
     document.body.classList.add('fullscreen-enabled');
     fullscreenToggleElement.addEventListener('click', function() {
@@ -137,27 +112,24 @@
     document.body.classList.add('fullscreen-disabled');
   }
 
-  // Set handler for scene list toggle.
   sceneListToggleElement.addEventListener('click', toggleSceneList);
 
-  // Start with the scene list open on desktop.
   if (!document.body.classList.contains('mobile')) {
     showSceneList();
   }
 
-  // Set handler for scene switch.
   scenes.forEach(function(scene) {
     var el = document.querySelector('#sceneList .scene[data-id="' + scene.data.id + '"]');
-    el.addEventListener('click', function() {
-      switchScene(scene);
-      // On mobile, hide scene list after selecting a scene.
-      if (document.body.classList.contains('mobile')) {
-        hideSceneList();
-      }
-    });
+    if (el) {
+      el.addEventListener('click', function() {
+        switchScene(scene);
+        if (document.body.classList.contains('mobile')) {
+          hideSceneList();
+        }
+      });
+    }
   });
 
-  // DOM elements for view controls.
   var viewUpElement = document.querySelector('#viewUp');
   var viewDownElement = document.querySelector('#viewDown');
   var viewLeftElement = document.querySelector('#viewLeft');
@@ -165,11 +137,9 @@
   var viewInElement = document.querySelector('#viewIn');
   var viewOutElement = document.querySelector('#viewOut');
 
-  // Dynamic parameters for controls.
   var velocity = 0.7;
   var friction = 3;
 
-  // Associate view controls with elements.
   var controls = viewer.controls();
   controls.registerMethod('upElement',    new Marzipano.ElementPressControlMethod(viewUpElement,     'y', -velocity, friction), true);
   controls.registerMethod('downElement',  new Marzipano.ElementPressControlMethod(viewDownElement,   'y',  velocity, friction), true);
@@ -192,6 +162,7 @@
   }
 
   function updateSceneName(scene) {
+    currentSceneName = scene.data.name;
     sceneNameElement.innerHTML = sanitize(scene.data.name);
   }
 
@@ -245,34 +216,26 @@
   }
 
   function createLinkHotspotElement(hotspot) {
-
-    // Create wrapper element to hold icon and tooltip.
     var wrapper = document.createElement('div');
     wrapper.classList.add('hotspot');
     wrapper.classList.add('link-hotspot');
 
-    // Create image element.
     var icon = document.createElement('img');
     icon.src = 'img/link.png';
     icon.classList.add('link-hotspot-icon');
 
-    // Set rotation transform.
     var transformProperties = [ '-ms-transform', '-webkit-transform', 'transform' ];
     for (var i = 0; i < transformProperties.length; i++) {
       var property = transformProperties[i];
       icon.style[property] = 'rotate(' + hotspot.rotation + 'rad)';
     }
 
-    // Add click event handler.
     wrapper.addEventListener('click', function() {
       switchScene(findSceneById(hotspot.target));
     });
 
-    // Prevent touch and scroll events from reaching the parent element.
-    // This prevents the view control logic from interfering with the hotspot.
     stopTouchAndScrollEventPropagation(wrapper);
 
-    // Create tooltip element.
     var tooltip = document.createElement('div');
     tooltip.classList.add('hotspot-tooltip');
     tooltip.classList.add('link-hotspot-tooltip');
@@ -285,17 +248,13 @@
   }
 
   function createInfoHotspotElement(hotspot) {
-
-    // Create wrapper element to hold icon and tooltip.
     var wrapper = document.createElement('div');
     wrapper.classList.add('hotspot');
     wrapper.classList.add('info-hotspot');
 
-    // Create hotspot/tooltip header.
     var header = document.createElement('div');
     header.classList.add('info-hotspot-header');
 
-    // Create image element.
     var iconWrapper = document.createElement('div');
     iconWrapper.classList.add('info-hotspot-icon-wrapper');
     var icon = document.createElement('img');
@@ -303,7 +262,6 @@
     icon.classList.add('info-hotspot-icon');
     iconWrapper.appendChild(icon);
 
-    // Create title element.
     var titleWrapper = document.createElement('div');
     titleWrapper.classList.add('info-hotspot-title-wrapper');
     var title = document.createElement('div');
@@ -311,7 +269,6 @@
     title.innerHTML = hotspot.title;
     titleWrapper.appendChild(title);
 
-    // Create close element.
     var closeWrapper = document.createElement('div');
     closeWrapper.classList.add('info-hotspot-close-wrapper');
     var closeIcon = document.createElement('img');
@@ -319,21 +276,17 @@
     closeIcon.classList.add('info-hotspot-close-icon');
     closeWrapper.appendChild(closeIcon);
 
-    // Construct header element.
     header.appendChild(iconWrapper);
     header.appendChild(titleWrapper);
     header.appendChild(closeWrapper);
 
-    // Create text element.
     var text = document.createElement('div');
     text.classList.add('info-hotspot-text');
     text.innerHTML = hotspot.text;
 
-    // Place header and text into wrapper element.
     wrapper.appendChild(header);
     wrapper.appendChild(text);
 
-    // Create a modal for the hotspot content to appear on mobile mode.
     var modal = document.createElement('div');
     modal.innerHTML = wrapper.innerHTML;
     modal.classList.add('info-hotspot-modal');
@@ -344,21 +297,15 @@
       modal.classList.toggle('visible');
     };
 
-    // Show content when hotspot is clicked.
     wrapper.querySelector('.info-hotspot-header').addEventListener('click', toggle);
-
-    // Hide content when close icon is clicked.
     modal.querySelector('.info-hotspot-close-wrapper').addEventListener('click', toggle);
 
-    // Prevent touch and scroll events from reaching the parent element.
-    // This prevents the view control logic from interfering with the hotspot.
     stopTouchAndScrollEventPropagation(wrapper);
 
     return wrapper;
   }
 
-  // Prevent touch and scroll events from reaching the parent element.
-  function stopTouchAndScrollEventPropagation(element, eventList) {
+  function stopTouchAndScrollEventPropagation(element) {
     var eventList = [ 'touchstart', 'touchmove', 'touchend', 'touchcancel',
                       'wheel', 'mousewheel' ];
     for (var i = 0; i < eventList.length; i++) {
@@ -386,7 +333,111 @@
     return null;
   }
 
-  // Display the initial scene.
+  // =========================================================
+  // SISTEMA DE RASTREIO DE INDICAÇÃO E NOTIFICAÇÃO (IGORRC)
+  // =========================================================
+  var contactBtn = document.getElementById('propertyContactBtn');
+  var modalOverlay = document.getElementById('contactModalOverlay');
+  var closeModalBtn = document.getElementById('closeContactModal');
+  var leadForm = document.getElementById('leadCaptureForm');
+  var referralCodeDisplay = document.getElementById('referralCodeDisplay');
+  var btnCallFercol = document.getElementById('btnCallFercol');
+  var btnWaFercol = document.getElementById('btnWaFercol');
+  var btnWaIgor = document.getElementById('btnWaIgor');
+
+  // Gera um código único de indicação para o visitante
+  var refCode = 'IGORRC-' + Math.floor(1000 + Math.random() * 9000);
+  if (referralCodeDisplay) {
+    referralCodeDisplay.textContent = refCode;
+  }
+
+  function updateWhatsAppLinks(visitorName, visitorPhone) {
+    var extraInfo = visitorName ? (' (Cliente: ' + visitorName + ' - ' + visitorPhone + ')') : '';
+    var msgFercol = encodeURIComponent(
+      'Olá, Fercol Empreendimentos! Vi o Tour Virtual 360° do Residencial Areia Branca e tenho interesse no imóvel. [Protocolo de Indicação: ' + refCode + ']' + extraInfo
+    );
+    var msgIgor = encodeURIComponent(
+      'Olá, Igor! Acabei de ver o Tour 360° do Residencial Areia Branca e tenho interesse no imóvel da Fercol Empreendimentos. Meu protocolo é ' + refCode + extraInfo
+    );
+    if (btnWaFercol) btnWaFercol.href = 'https://wa.me/553432325154?text=' + msgFercol;
+    if (btnWaIgor) btnWaIgor.href = 'https://wa.me/5534991848525?text=' + msgIgor;
+  }
+
+  updateWhatsAppLinks('', '');
+
+  // Envia alerta instantâneo em segundo plano via ntfy.sh
+  function notifyIgor(actionType, extraDetails) {
+    var timestamp = new Date().toLocaleString('pt-BR');
+    var payload = '🏠 Tour Areia Branca 360\n' +
+                  '⚡ Ação: ' + actionType + '\n' +
+                  '📍 Cômodo atual: ' + currentSceneName + '\n' +
+                  '🔖 Protocolo: ' + refCode + '\n' +
+                  '🕒 Horário: ' + timestamp +
+                  (extraDetails ? '\n👤 Dados: ' + extraDetails : '');
+
+    fetch('https://ntfy.sh/irctour360_comissao_igorrc93', {
+      method: 'POST',
+      body: payload,
+      headers: {
+        'Title': 'Novo Interessado no Imovel (Fercol)!',
+        'Priority': 'high',
+        'Tags': 'house,moneybag'
+      }
+    }).catch(function() {});
+  }
+
+  if (contactBtn) {
+    contactBtn.addEventListener('click', function() {
+      modalOverlay.classList.add('active');
+      notifyIgor('Abriu o painel de contato da Fercol Empreendimentos', '');
+    });
+  }
+
+  if (closeModalBtn) {
+    closeModalBtn.addEventListener('click', function() {
+      modalOverlay.classList.remove('active');
+    });
+  }
+
+  if (leadForm) {
+    leadForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var name = document.getElementById('leadName').value.trim();
+      var phone = document.getElementById('leadPhone').value.trim();
+      updateWhatsAppLinks(name, phone);
+      notifyIgor('Cadastrou Nome e Telefone para Atendimento!', name + ' | Tel: ' + phone);
+
+      // Abre automaticamente o WhatsApp do Igor com os dados do cliente ou confirma na tela
+      var submitBtn = leadForm.querySelector('.lead-submit-btn');
+      submitBtn.textContent = '✅ Atendimento Registrado! Escolha como falar abaixo:';
+      submitBtn.style.background = '#059669';
+    });
+  }
+
+  if (btnCallFercol) {
+    btnCallFercol.addEventListener('click', function() {
+      var name = document.getElementById('leadName').value.trim();
+      var phone = document.getElementById('leadPhone').value.trim();
+      notifyIgor('Clicou para LIGAR para Fercol (+55 34 3232-5154)', name + ' ' + phone);
+    });
+  }
+
+  if (btnWaFercol) {
+    btnWaFercol.addEventListener('click', function() {
+      var name = document.getElementById('leadName').value.trim();
+      var phone = document.getElementById('leadPhone').value.trim();
+      notifyIgor('Clicou para chamar FERCOL no WhatsApp (+55 34 3232-5154)', name + ' ' + phone);
+    });
+  }
+
+  if (btnWaIgor) {
+    btnWaIgor.addEventListener('click', function() {
+      var name = document.getElementById('leadName').value.trim();
+      var phone = document.getElementById('leadPhone').value.trim();
+      notifyIgor('Clicou para atendimento direto com IGOR (+55 34 99184-8525)', name + ' ' + phone);
+    });
+  }
+
   switchScene(scenes[0]);
 
 })();
