@@ -565,7 +565,14 @@ var APP_DATA = {
         "pitch": 0.4055712696961393,
         "fov": 1.4010588678110822
       },
-      "linkHotspots": [],
+      "linkHotspots": [
+        {
+          "yaw": 1.46630835470833,
+          "pitch": 0.9112649725822486,
+          "rotation": 0,
+          "target": "7-varanda-gourmet"
+        }
+      ],
       "infoHotspots": []
     },
     {
