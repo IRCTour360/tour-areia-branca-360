@@ -334,52 +334,46 @@
   }
 
   // =========================================================
-  // SISTEMA DE RASTREIO DE INDICAÇÃO E NOTIFICAÇÃO (IGORRC)
+  // SISTEMA DE BLOQUEIO DE CONTATO E NOTIFICAÇÃO (IGORRC)
   // =========================================================
   var contactBtn = document.getElementById('propertyContactBtn');
   var modalOverlay = document.getElementById('contactModalOverlay');
   var closeModalBtn = document.getElementById('closeContactModal');
   var leadForm = document.getElementById('leadCaptureForm');
+  var directContactBox = document.getElementById('directContactBox');
+  var modalInstruction = document.getElementById('modalInstruction');
   var referralCodeDisplay = document.getElementById('referralCodeDisplay');
-  var btnCallFercol = document.getElementById('btnCallFercol');
   var btnWaFercol = document.getElementById('btnWaFercol');
-  var btnWaIgor = document.getElementById('btnWaIgor');
 
-  // Gera um código único de indicação para o visitante
   var refCode = 'IGORRC-' + Math.floor(1000 + Math.random() * 9000);
   if (referralCodeDisplay) {
     referralCodeDisplay.textContent = refCode;
   }
 
-  function updateWhatsAppLinks(visitorName, visitorPhone) {
-    var extraInfo = visitorName ? (' (Cliente: ' + visitorName + ' - ' + visitorPhone + ')') : '';
+  function getFercolWhatsAppUrl(visitorName, visitorPhone) {
     var msgFercol = encodeURIComponent(
-      'Olá, Fercol Empreendimentos! Vi o Tour Virtual 360° do Residencial Areia Branca e tenho interesse no imóvel. [Protocolo de Indicação: ' + refCode + ']' + extraInfo
+      'Olá, Fercol Empreendimentos! Vi o Tour Virtual 360° do Residencial Areia Branca e tenho interesse no imóvel.\n\n' +
+      '👤 Nome: ' + visitorName + '\n' +
+      '📱 WhatsApp: ' + visitorPhone + '\n' +
+      '🔖 Protocolo de Indicação: ' + refCode + ' (Tour 360 IgorRC)'
     );
-    var msgIgor = encodeURIComponent(
-      'Olá, Igor! Acabei de ver o Tour 360° do Residencial Areia Branca e tenho interesse no imóvel da Fercol Empreendimentos. Meu protocolo é ' + refCode + extraInfo
-    );
-    if (btnWaFercol) btnWaFercol.href = 'https://wa.me/553432325154?text=' + msgFercol;
-    if (btnWaIgor) btnWaIgor.href = 'https://wa.me/5534991848525?text=' + msgIgor;
+    return 'https://wa.me/553432325154?text=' + msgFercol;
   }
 
-  updateWhatsAppLinks('', '');
-
-  // Envia alerta instantâneo em segundo plano via ntfy.sh
   function notifyIgor(actionType, extraDetails) {
     var timestamp = new Date().toLocaleString('pt-BR');
     var payload = '🏠 Tour Areia Branca 360\n' +
                   '⚡ Ação: ' + actionType + '\n' +
-                  '📍 Cômodo atual: ' + currentSceneName + '\n' +
+                  '📍 Cômodo: ' + currentSceneName + '\n' +
                   '🔖 Protocolo: ' + refCode + '\n' +
                   '🕒 Horário: ' + timestamp +
-                  (extraDetails ? '\n👤 Dados: ' + extraDetails : '');
+                  (extraDetails ? '\n👤 Cliente: ' + extraDetails : '');
 
     fetch('https://ntfy.sh/irctour360_comissao_igorrc93', {
       method: 'POST',
       body: payload,
       headers: {
-        'Title': 'Novo Interessado no Imovel (Fercol)!',
+        'Title': 'Lead Liberou WhatsApp da Fercol!',
         'Priority': 'high',
         'Tags': 'house,moneybag'
       }
@@ -389,7 +383,6 @@
   if (contactBtn) {
     contactBtn.addEventListener('click', function() {
       modalOverlay.classList.add('active');
-      notifyIgor('Abriu o painel de contato da Fercol Empreendimentos', '');
     });
   }
 
@@ -404,21 +397,28 @@
       e.preventDefault();
       var name = document.getElementById('leadName').value.trim();
       var phone = document.getElementById('leadPhone').value.trim();
-      updateWhatsAppLinks(name, phone);
-      notifyIgor('Cadastrou Nome e Telefone para Atendimento!', name + ' | Tel: ' + phone);
 
-      // Abre automaticamente o WhatsApp do Igor com os dados do cliente ou confirma na tela
-      var submitBtn = leadForm.querySelector('.lead-submit-btn');
-      submitBtn.textContent = '✅ Atendimento Registrado! Escolha como falar abaixo:';
-      submitBtn.style.background = '#059669';
-    });
-  }
+      if (!name || !phone) return;
 
-  if (btnCallFercol) {
-    btnCallFercol.addEventListener('click', function() {
-      var name = document.getElementById('leadName').value.trim();
-      var phone = document.getElementById('leadPhone').value.trim();
-      notifyIgor('Clicou para LIGAR para Fercol (+55 34 3232-5154)', name + ' ' + phone);
+      var waUrl = getFercolWhatsAppUrl(name, phone);
+      if (btnWaFercol) {
+        btnWaFercol.href = waUrl;
+      }
+
+      // Esconde o formulário e revela o telefone + botão do WhatsApp da Fercol
+      leadForm.style.display = 'none';
+      if (modalInstruction) {
+        modalInstruction.innerHTML = '✅ <strong>Cadastro concluído!</strong> O contato da Fercol Empreendimentos foi liberado abaixo:';
+      }
+      if (directContactBox) {
+        directContactBox.style.display = 'block';
+      }
+
+      // Notifica o Igor imediatamente com Nome e WhatsApp do cliente
+      notifyIgor('Preencheu Nome e WhatsApp e liberou contato da Fercol', name + ' | WhatsApp: ' + phone);
+
+      // Redireciona automaticamente para o WhatsApp da Fercol em nova aba
+      window.open(waUrl, '_blank');
     });
   }
 
@@ -426,15 +426,7 @@
     btnWaFercol.addEventListener('click', function() {
       var name = document.getElementById('leadName').value.trim();
       var phone = document.getElementById('leadPhone').value.trim();
-      notifyIgor('Clicou para chamar FERCOL no WhatsApp (+55 34 3232-5154)', name + ' ' + phone);
-    });
-  }
-
-  if (btnWaIgor) {
-    btnWaIgor.addEventListener('click', function() {
-      var name = document.getElementById('leadName').value.trim();
-      var phone = document.getElementById('leadPhone').value.trim();
-      notifyIgor('Clicou para atendimento direto com IGOR (+55 34 99184-8525)', name + ' ' + phone);
+      notifyIgor('Clicou no botão do WhatsApp da Fercol (+55 34 3232-5154)', name + ' | WhatsApp: ' + phone);
     });
   }
 

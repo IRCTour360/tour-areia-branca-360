@@ -83,7 +83,7 @@ a, a:hover, a:active, a:visited {
   pointer-events: auto;
 }
 
-/* Botões Superiores (Menu, Autorotate, Fullscreen) */
+/* Botões Superiores */
 #fullscreenToggle,
 #autorotateToggle,
 #sceneListToggle {
@@ -97,7 +97,7 @@ a, a:hover, a:active, a:visited {
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
-  transition: all 0.2s ease;
+  transition: background 0.2s ease;
   z-index: 30;
 }
 
@@ -105,7 +105,6 @@ a, a:hover, a:active, a:visited {
 #autorotateToggle:hover,
 #sceneListToggle:hover {
   background: rgba(30, 41, 59, 0.92);
-  transform: translateY(-1px);
 }
 
 .mobile #fullscreenToggle,
@@ -116,17 +115,9 @@ a, a:hover, a:active, a:visited {
   height: 44px;
 }
 
-#sceneListToggle {
-  left: 14px;
-}
-
-#autorotateToggle {
-  right: 14px;
-}
-
-body.fullscreen-enabled #autorotateToggle {
-  right: 66px;
-}
+#sceneListToggle { left: 14px; }
+#autorotateToggle { right: 14px; }
+body.fullscreen-enabled #autorotateToggle { right: 66px; }
 
 #fullscreenToggle {
   display: none;
@@ -149,27 +140,19 @@ body.fullscreen-enabled #fullscreenToggle {
 
 #fullscreenToggle .icon.on,
 #autorotateToggle .icon.on,
-#sceneListToggle .icon.on {
-  display: none;
-}
+#sceneListToggle .icon.on { display: none; }
 
 #fullscreenToggle .icon.off,
 #autorotateToggle .icon.off,
-#sceneListToggle .icon.off {
-  display: block;
-}
+#sceneListToggle .icon.off { display: block; }
 
 #fullscreenToggle.enabled .icon.on,
 #autorotateToggle.enabled .icon.on,
-#sceneListToggle.enabled .icon.on {
-  display: block;
-}
+#sceneListToggle.enabled .icon.on { display: block; }
 
 #fullscreenToggle.enabled .icon.off,
 #autorotateToggle.enabled .icon.off,
-#sceneListToggle.enabled .icon.off {
-  display: none;
-}
+#sceneListToggle.enabled .icon.off { display: none; }
 
 /* Menu Lateral de Ambientes */
 #sceneList {
@@ -187,12 +170,12 @@ body.fullscreen-enabled #fullscreenToggle {
   overflow-x: hidden;
   overflow-y: auto;
   margin-left: 0;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: left 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 25;
 }
 
 #sceneList.enabled {
-  transform: translateX(274px);
+  left: 14px;
 }
 
 .sceneListHeader {
@@ -248,19 +231,16 @@ body.fullscreen-enabled #fullscreenToggle {
 
 .mobile #sceneList {
   top: 62px;
-  left: -100%;
+  left: -105%;
   width: calc(100% - 28px);
   max-height: calc(100% - 150px);
 }
 
 .mobile #sceneList.enabled {
-  transform: translateX(calc(100% + 14px));
+  left: 14px;
 }
 
-/* Scrollbar elegante para a lista de ambientes */
-#sceneList::-webkit-scrollbar {
-  width: 5px;
-}
+#sceneList::-webkit-scrollbar { width: 5px; }
 #sceneList::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 999px;
@@ -270,45 +250,45 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   display: none;
 }
 
-/* Setas de Navegação (Link Hotspot) com Efeito Pulso */
+/* =========================================================
+   HOTSPOTS DE NAVEGAÇÃO (SEM DELAY DE MOVIMENTO 3D)
+   ========================================================= */
 .link-hotspot {
-  width: 62px;
-  height: 62px;
-  margin-left: -31px;
-  margin-top: -31px;
-  opacity: 0.95;
-  transition: transform 0.25s ease, opacity 0.25s ease;
-}
-
-.link-hotspot::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 50%;
-  background: rgba(16, 185, 129, 0.35);
-  animation: hotspotPulse 2s infinite ease-out;
-  z-index: -1;
-  pointer-events: none;
-}
-
-@keyframes hotspotPulse {
-  0% { transform: scale(0.85); opacity: 0.9; }
-  100% { transform: scale(1.55); opacity: 0; }
+  width: 60px;
+  height: 60px;
+  margin-left: -30px;
+  margin-top: -30px;
+  opacity: 0.92;
+  /* IMPORTANTE: Apenas opacity na transição para não conflitar com o transform 3D do Marzipano */
+  -webkit-transition: opacity 0.2s;
+  transition: opacity 0.2s;
 }
 
 .no-touch .link-hotspot:hover {
   opacity: 1;
-  transform: scale(1.1);
+}
+
+.mobile .link-hotspot {
+  width: 70px;
+  height: 70px;
+  margin-left: -35px;
+  margin-top: -35px;
 }
 
 .link-hotspot-icon {
   width: 100%;
   height: 100%;
   cursor: pointer;
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+  animation: iconPulseRing 2s infinite;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.45));
+}
+
+@keyframes iconPulseRing {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.65); }
+  70% { box-shadow: 0 0 0 14px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
 }
 
 .link-hotspot-tooltip {
@@ -321,8 +301,7 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   max-width: 260px;
   padding: 7px 12px;
   border-radius: 8px;
-  background: rgba(15, 23, 42, 0.88);
-  backdrop-filter: blur(8px);
+  background: rgba(15, 23, 42, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: #fff;
   white-space: nowrap;
@@ -330,36 +309,59 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   overflow: hidden;
   pointer-events: none;
   opacity: 0;
+  -ms-transform: translateX(-8px);
+  -webkit-transform: translateX(-8px);
   transform: translateX(-8px);
-  transition: transform 0.25s ease, opacity 0.25s ease;
+  -webkit-transition: -ms-transform 0.25s, -webkit-transform 0.25s, transform 0.25s, opacity 0.25s;
+  transition: -ms-transform 0.25s, -webkit-transform 0.25s, transform 0.25s, opacity 0.25s;
 }
 
 .no-touch .link-hotspot:hover .link-hotspot-tooltip {
   opacity: 1;
+  -ms-transform: translateX(0);
+  -webkit-transform: translateX(0);
   transform: translateX(0);
+  pointer-events: all;
 }
 
-/* Pontos de Informação (Info Hotspot) */
+/* =========================================================
+   PONTOS DE INFORMAÇÃO (INFO HOTSPOT)
+   ========================================================= */
 .info-hotspot {
   line-height: 1.3em;
   opacity: 0.95;
+  /* Apenas opacity para manter o ícone fixo na cena 3D */
+  -webkit-transition: opacity 0.2s;
   transition: opacity 0.2s;
+}
+
+.no-touch .info-hotspot:hover,
+.info-hotspot.visible {
+  opacity: 1;
 }
 
 .info-hotspot .info-hotspot-header {
   width: 42px;
   height: 42px;
   border-radius: 21px;
-  background: rgba(16, 185, 129, 0.9);
+  background: rgba(16, 185, 129, 0.92);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
   cursor: pointer;
+  -webkit-transition: width 0.3s ease-in-out 0.3s, border-radius 0.3s ease-in-out 0.3s;
   transition: width 0.3s ease-in-out 0.3s, border-radius 0.3s ease-in-out 0.3s;
+}
+
+.mobile .info-hotspot .info-hotspot-header {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
 }
 
 .desktop.no-touch .info-hotspot .info-hotspot-header:hover,
 .desktop .info-hotspot.visible .info-hotspot-header {
   width: 260px;
   border-radius: 8px;
+  -webkit-transition: width 0.3s ease-in-out, border-radius 0.3s ease-in-out;
   transition: width 0.3s ease-in-out, border-radius 0.3s ease-in-out;
 }
 
@@ -372,6 +374,11 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
 .info-hotspot .info-hotspot-icon-wrapper {
   width: 42px;
   height: 42px;
+}
+
+.mobile .info-hotspot .info-hotspot-icon-wrapper {
+  width: 50px;
+  height: 50px;
 }
 
 .info-hotspot .info-hotspot-icon {
@@ -440,8 +447,7 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   top: 42px;
   left: 0;
   padding: 12px 14px;
-  background: rgba(15, 23, 42, 0.92);
-  backdrop-filter: blur(10px);
+  background: rgba(15, 23, 42, 0.95);
   border-bottom-right-radius: 8px;
   border-bottom-left-radius: 8px;
   font-size: 13.5px;
@@ -455,9 +461,7 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
 }
 
 /* Modal Info Mobile */
-.desktop .info-hotspot-modal {
-  display: none;
-}
+.desktop .info-hotspot-modal { display: none; }
 
 .info-hotspot-modal {
   top: 0;
@@ -489,17 +493,8 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   border-top-right-radius: 12px;
 }
 
-.info-hotspot-modal .info-hotspot-icon-wrapper {
-  width: 50px;
-  height: 50px;
-}
-
-.info-hotspot-modal .info-hotspot-icon {
-  width: 80%;
-  height: 80%;
-  margin: 10%;
-}
-
+.info-hotspot-modal .info-hotspot-icon-wrapper { width: 50px; height: 50px; }
+.info-hotspot-modal .info-hotspot-icon { width: 80%; height: 80%; margin: 10%; }
 .info-hotspot-modal .info-hotspot-title-wrapper {
   position: absolute;
   top: 0;
@@ -521,11 +516,7 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   border-top-right-radius: 12px;
 }
 
-.info-hotspot-modal .info-hotspot-close-icon {
-  width: 60%;
-  height: 60%;
-  margin: 20%;
-}
+.info-hotspot-modal .info-hotspot-close-icon { width: 60%; height: 60%; margin: 20%; }
 
 .info-hotspot-modal .info-hotspot-text {
   position: absolute;
@@ -540,10 +531,7 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   overflow-y: auto;
 }
 
-/* Botões de Controle de Visão */
-.viewControlButton {
-  display: none;
-}
+.viewControlButton { display: none; }
 
 /* =========================================================
    BOTÃO FLUTUANTE DE INTERESSE (FERCOL EMPREENDIMENTOS)
@@ -569,32 +557,14 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
 }
 
 .floating-cta-btn:hover {
-  transform: translateY(-2px) scale(1.02);
+  transform: translateY(-2px);
   box-shadow: 0 14px 32px rgba(16, 185, 129, 0.6);
 }
 
-.cta-icon {
-  width: 22px;
-  height: 22px;
-  flex-shrink: 0;
-}
-
-.cta-text-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.cta-label {
-  font-size: 13.5px;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.cta-sub {
-  font-size: 11px;
-  font-weight: 500;
-  opacity: 0.92;
-}
+.cta-icon { width: 22px; height: 22px; flex-shrink: 0; }
+.cta-text-group { display: flex; flex-direction: column; }
+.cta-label { font-size: 13.5px; font-weight: 700; line-height: 1.2; }
+.cta-sub { font-size: 11px; font-weight: 500; opacity: 0.92; }
 
 /* =========================================================
    SELO DO DESENVOLVEDOR DO TOUR 360 (IGORRC - INSTAGRAM)
@@ -607,20 +577,19 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   align-items: center;
   gap: 10px;
   padding: 9px 14px;
-  background: rgba(15, 23, 42, 0.8);
+  background: rgba(15, 23, 42, 0.82);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 14px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   z-index: 45;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .creator-badge:hover {
-  background: rgba(30, 41, 59, 0.92);
+  background: rgba(30, 41, 59, 0.95);
   border-color: rgba(236, 72, 153, 0.5);
-  transform: translateY(-2px);
 }
 
 .insta-icon-wrapper {
@@ -634,40 +603,19 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   flex-shrink: 0;
 }
 
-.insta-icon-wrapper svg {
-  width: 19px;
-  height: 19px;
-  color: #fff;
-}
-
-.creator-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.creator-headline {
-  font-size: 11px;
-  color: #cbd5e1;
-  line-height: 1.25;
-}
-
-.creator-name {
-  font-size: 12.5px;
-  color: #ffffff;
-  margin-top: 1px;
-}
-
-.creator-name strong {
-  color: #f472b6;
-}
+.insta-icon-wrapper svg { width: 19px; height: 19px; color: #fff; }
+.creator-info { display: flex; flex-direction: column; }
+.creator-headline { font-size: 11px; color: #cbd5e1; line-height: 1.25; }
+.creator-name { font-size: 12.5px; color: #ffffff; margin-top: 1px; }
+.creator-name strong { color: #f472b6; }
 
 /* =========================================================
-   MODAL DE CONTATO E PROTEÇÃO DE COMISSÃO
+   MODAL DE CONTATO E BLOQUEIO DE LEAD
    ========================================================= */
 .contact-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(3, 7, 18, 0.78);
+  background: rgba(3, 7, 18, 0.8);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;
@@ -688,7 +636,7 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
 .contact-modal-card {
   position: relative;
   width: 100%;
-  max-width: 440px;
+  max-width: 430px;
   background: #0f172a;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 20px;
@@ -754,9 +702,7 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
   user-select: text;
 }
 
-.lead-form input:focus {
-  border-color: #10b981;
-}
+.lead-form input:focus { border-color: #10b981; }
 
 .lead-submit-btn {
   padding: 13px;
@@ -772,7 +718,7 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
 }
 
 .direct-contact-box {
-  margin-top: 18px;
+  margin-top: 16px;
   padding-top: 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -815,41 +761,26 @@ body.single-scene #sceneList, body.single-scene #sceneListToggle {
 .contact-actions {
   display: flex;
   flex-direction: column;
-  gap: 8px;
 }
 
 .action-btn {
   display: block;
   text-align: center;
-  padding: 11px 14px;
+  padding: 13px 14px;
   border-radius: 10px;
-  font-size: 13.5px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   transition: opacity 0.2s;
 }
 
-.action-btn:hover {
-  opacity: 0.92;
-}
-
-.call-btn {
-  background: #1e293b;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #f8fafc;
-}
+.action-btn:hover { opacity: 0.92; }
 
 .wa-btn {
-  background: #059669;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: #ffffff;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
 }
 
-.vip-btn {
-  background: rgba(245, 158, 11, 0.16);
-  border: 1px solid rgba(245, 158, 11, 0.4);
-  color: #fbbf24;
-}
-
-/* Responsividade Mobile para os botões de rodapé */
 @media (max-width: 680px) {
   .creator-badge {
     bottom: 12px;

@@ -105,7 +105,7 @@
   <img class="icon on" src="img/collapse.png">
 </a>
 
-<!-- Botões de Direção (Opcional) -->
+<!-- Botões de Direção -->
 <a href="javascript:void(0)" id="viewUp" class="viewControlButton viewControlButton-1">
   <img class="icon" src="img/up.png">
 </a>
@@ -127,13 +127,12 @@
 
 <!-- Botão Flutuante de Interesse no Imóvel (Fercol Empreendimentos) -->
 <button id="propertyContactBtn" class="floating-cta-btn">
-  <span class="cta-pulse"></span>
   <svg class="cta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
   </svg>
   <div class="cta-text-group">
     <span class="cta-label">Interesse no Imóvel?</span>
-    <span class="cta-sub">Fercol Empreendimentos</span>
+    <span class="cta-sub">Falar com Fercol Empreendimentos</span>
   </div>
 </button>
 
@@ -147,42 +146,37 @@
     </svg>
   </div>
   <div class="creator-info">
-    <span class="creator-headline">Quer um Tour 360° profissional do seu negócio?</span>
-    <span class="creator-name">Fale com o criador: <strong>@igorrc93 (IgorRC)</strong></span>
+    <span class="creator-headline">Quer criar um Tour 360° profissional do seu negócio?</span>
+    <span class="creator-name">Entre em contato com o criador: <strong>IgorRC (@igorrc93)</strong></span>
   </div>
 </a>
 
-<!-- Modal de Contato do Imóvel + Registro de Indicação -->
+<!-- Modal de Contato do Imóvel (Com bloqueio até preencher Nome e WhatsApp) -->
 <div id="contactModalOverlay" class="contact-modal-overlay">
   <div class="contact-modal-card">
     <button id="closeContactModal" class="modal-close-btn">&times;</button>
     <div class="modal-badge">Atendimento Oficial • Residencial Areia Branca</div>
-    <h2>Tenho Interesse neste Imóvel</h2>
-    <p class="modal-desc">Informe seu nome e telefone abaixo para liberar o atendimento direto com a <strong>Fercol Empreendimentos</strong> e gerar seu protocolo de visita:</p>
+    <h2>Falar com Fercol Empreendimentos</h2>
+    <p id="modalInstruction" class="modal-desc">Para liberar o contato oficial da <strong>Fercol Empreendimentos</strong> e iniciar seu atendimento no WhatsApp, informe seu nome e número abaixo:</p>
     
     <form id="leadCaptureForm" class="lead-form">
       <input type="text" id="leadName" placeholder="Seu nome completo" required />
-      <input type="tel" id="leadPhone" placeholder="Seu telefone / WhatsApp (com DDD)" required />
-      <button type="submit" class="lead-submit-btn">Liberar Contato & Registrar Atendimento</button>
+      <input type="tel" id="leadPhone" placeholder="Seu WhatsApp com DDD (ex: 34 99999-9999)" required />
+      <button type="submit" class="lead-submit-btn">Liberar WhatsApp da Fercol</button>
     </form>
 
-    <div id="directContactBox" class="direct-contact-box">
+    <!-- Esta caixa fica 100% oculta até o cliente enviar o formulário acima -->
+    <div id="directContactBox" class="direct-contact-box" style="display: none;">
       <div class="protocol-box">
-        <span>Código de Indicação do Tour:</span>
+        <span>Protocolo de Indicação:</span>
         <strong id="referralCodeDisplay">REF-IGORRC</strong>
       </div>
-      <p class="fercol-phone-title">Central de Vendas — Fercol Empreendimentos:</p>
+      <p class="fercol-phone-title">Contato Oficial Liberado — Fercol Empreendimentos:</p>
       <div class="fercol-phone-number">+55 34 3232-5154</div>
       
       <div class="contact-actions">
-        <a href="tel:+553432325154" id="btnCallFercol" class="action-btn call-btn">
-          📞 Ligar para (34) 3232-5154
-        </a>
         <a href="https://wa.me/553432325154" target="_blank" id="btnWaFercol" class="action-btn wa-btn">
-          💬 Chamar Fercol no WhatsApp
-        </a>
-        <a href="https://wa.me/5534991848525" target="_blank" id="btnWaIgor" class="action-btn vip-btn">
-          ⚡ Solicitar Retorno Rápido (Consultor do Tour)
+          💬 Iniciar Conversa no WhatsApp da Fercol
         </a>
       </div>
     </div>
