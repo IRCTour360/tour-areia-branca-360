@@ -164,6 +164,10 @@
   function updateSceneName(scene) {
     currentSceneName = scene.data.name;
     sceneNameElement.innerHTML = sanitize(scene.data.name);
+    // Envia para o Microsoft Clarity qual cômodo o cliente está visitando
+    if (window.clarity) {
+      window.clarity("set", "Comodo_Visitado", scene.data.name);
+    }
   }
 
   function updateSceneList(scene) {
@@ -346,7 +350,6 @@
   var referralCodeDisplay = document.getElementById('referralCodeDisplay');
   var btnWaFercol = document.getElementById('btnWaFercol');
 
-  // Protocolo atualizado para IRCTOUR360
   var refCode = 'IRCTOUR360-' + Math.floor(1000 + Math.random() * 9000);
   if (referralCodeDisplay) {
     referralCodeDisplay.textContent = refCode;
@@ -403,6 +406,9 @@
   if (contactBtn) {
     contactBtn.addEventListener('click', function() {
       modalOverlay.classList.add('active');
+      if (window.clarity) {
+        window.clarity("event", "Abriu_Modal_Fercol");
+      }
     });
   }
 
@@ -419,7 +425,6 @@
       var phone = leadPhoneInput.value.trim();
       var rawDigits = phone.replace(/\D/g, '');
 
-      // Valida se tem pelo menos 10 dígitos (DDD + número)
       if (rawDigits.length < 10) {
         leadPhoneInput.setCustomValidity('Por favor, digite o DDD + número válido (10 ou 11 dígitos).');
         leadPhoneInput.reportValidity();
@@ -435,7 +440,6 @@
         btnWaFercol.href = waUrl;
       }
 
-      // Esconde o formulário e revela o telefone + botão do WhatsApp da Fercol
       leadForm.style.display = 'none';
       if (modalInstruction) {
         modalInstruction.innerHTML = '✅ <strong>Cadastro concluído!</strong> O contato da Fercol Empreendimentos foi liberado abaixo:';
@@ -444,10 +448,17 @@
         directContactBox.style.display = 'block';
       }
 
-      // Notifica imediatamente com Nome e WhatsApp formatado do cliente
+      // 1. Notifica no seu celular pelo app ntfy
       notifyIgor('Preencheu Nome e WhatsApp e liberou contato da Fercol', name + ' | WhatsApp: ' + phone);
 
-      // Redireciona automaticamente para o WhatsApp da Fercol em nova aba
+      // 2. Registra a conversão no gráfico mensal do Microsoft Clarity
+      if (window.clarity) {
+        window.clarity("event", "Lead_Liberou_WhatsApp_Fercol");
+        window.clarity("set", "Protocolo_Indicacao", refCode);
+        window.clarity("identify", phone, undefined, undefined, name);
+      }
+
+      // 3. Redireciona automaticamente para o WhatsApp da Fercol
       window.open(waUrl, '_blank');
     });
 
