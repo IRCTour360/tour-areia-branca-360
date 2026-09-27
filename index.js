@@ -16,6 +16,74 @@
 
   var currentSceneName = 'Elevador';
 
+  // =========================================================
+  // RASTREAMENTO AVANÇADO DE COMPORTAMENTO PARA O CLARITY
+  // =========================================================
+  var visitedRoomsList = [];
+  var openedInfoList = [];
+  var leadConverted = false;
+  var sessionStartTime = Date.now();
+
+  function sendTagToClarity(key, value) {
+    if (window.clarity) {
+      window.clarity("set", key, String(value));
+    }
+  }
+
+  function sendEventToClarity(eventName) {
+    if (window.clarity) {
+      window.clarity("event", eventName);
+    }
+  }
+
+  // Registra dados iniciais do visitante (Novo vs Retorno, Origem e Tela)
+  (function initVisitorIntelligence() {
+    var visits = parseInt(localStorage.getItem('irctour_visits_count') || '0', 10) + 1;
+    localStorage.setItem('irctour_visits_count', visits);
+
+    var visitorStatus = visits === 1 ? '1a Visita (Novo)' : 'Retorno (' + visits + 'a Visita)';
+    var urlParams = new URLSearchParams(window.location.search);
+    var utmSource = urlParams.get('origem') || urlParams.get('utm_source');
+    var ua = navigator.userAgent || '';
+
+    var trafficSource = 'Link Direto / WhatsApp';
+    if (utmSource) {
+      trafficSource = 'Campanha: ' + utmSource;
+    } else if (/Instagram/i.test(ua)) {
+      trafficSource = 'Instagram (App)';
+    } else if (/FBAN|FBAV/i.test(ua)) {
+      trafficSource = 'Facebook (App)';
+    } else if (document.referrer) {
+      trafficSource = document.referrer;
+    }
+
+    // Aguarda o Clarity carregar e grava na aba "Informações"
+    setTimeout(function() {
+      sendTagToClarity('Tipo_Visitante', visitorStatus);
+      sendTagToClarity('Origem_Acesso', trafficSource);
+      sendTagToClarity('Resolucao_Tela', window.screen.width + 'x' + window.screen.height);
+      sendTagToClarity('Nivel_Interesse', '1 - Curioso (Olhou rapido)');
+    }, 1500);
+  })();
+
+  // Atualiza automaticamente o "Termômetro de Interesse" conforme o cliente explora o apê
+  function evaluateEngagementLevel() {
+    if (leadConverted) {
+      sendTagToClarity('Nivel_Interesse', '4 - LEAD CONVERTIDO (Liberou WhatsApp)');
+      return;
+    }
+    var elapsedSeconds = Math.round((Date.now() - sessionStartTime) / 1000);
+    var roomsCount = visitedRoomsList.length;
+
+    if (roomsCount >= 8 || elapsedSeconds >= 180) {
+      sendTagToClarity('Nivel_Interesse', '3 - Muito Quente (Explorou grande parte)');
+    } else if (roomsCount >= 4 || elapsedSeconds >= 60) {
+      sendTagToClarity('Nivel_Interesse', '2 - Interessado (Navegou pelo imovel)');
+    }
+  }
+
+  setInterval(evaluateEngagementLevel, 15000);
+
   if (window.matchMedia) {
     var setMode = function() {
       if (mql.matches) {
@@ -100,6 +168,7 @@
     document.body.classList.add('fullscreen-enabled');
     fullscreenToggleElement.addEventListener('click', function() {
       screenfull.toggle();
+      sendEventToClarity('Clicou_Tela_Cheia');
     });
     screenfull.on('change', function() {
       if (screenfull.isFullscreen) {
@@ -164,10 +233,15 @@
   function updateSceneName(scene) {
     currentSceneName = scene.data.name;
     sceneNameElement.innerHTML = sanitize(scene.data.name);
-    // Envia para o Microsoft Clarity qual cômodo o cliente está visitando
-    if (window.clarity) {
-      window.clarity("set", "Comodo_Visitado", scene.data.name);
+
+    // Registra histórico completo e quantidade de cômodos visitados no Clarity
+    if (visitedRoomsList.indexOf(scene.data.name) === -1) {
+      visitedRoomsList.push(scene.data.name);
     }
+    sendTagToClarity('Ultimo_Comodo', scene.data.name);
+    sendTagToClarity('Qtd_Comodos_Vistos', visitedRoomsList.length + ' de ' + scenes.length + ' ambientes');
+    sendTagToClarity('Comodos_Visitados', visitedRoomsList.join(' | '));
+    evaluateEngagementLevel();
   }
 
   function updateSceneList(scene) {
@@ -299,6 +373,13 @@
     var toggle = function() {
       wrapper.classList.toggle('visible');
       modal.classList.toggle('visible');
+      if (wrapper.classList.contains('visible')) {
+        if (openedInfoList.indexOf(hotspot.title) === -1) {
+          openedInfoList.push(hotspot.title);
+        }
+        sendTagToClarity('Infos_Abertas', openedInfoList.join(' | '));
+        sendEventToClarity('Abriu_Info_' + hotspot.title);
+      }
     };
 
     wrapper.querySelector('.info-hotspot-header').addEventListener('click', toggle);
@@ -341,6 +422,7 @@
   // SISTEMA DE BLOQUEIO DE CONTATO, MÁSCARA E NOTIFICAÇÃO
   // =========================================================
   var contactBtn = document.getElementById('propertyContactBtn');
+  var creatorBadge = document.getElementById('creatorBadge');
   var modalOverlay = document.getElementById('contactModalOverlay');
   var closeModalBtn = document.getElementById('closeContactModal');
   var leadForm = document.getElementById('leadCaptureForm');
@@ -355,7 +437,6 @@
     referralCodeDisplay.textContent = refCode;
   }
 
-  // Máscara automática de telefone (DD) 99999-9999 com limite máximo de 11 dígitos
   if (leadPhoneInput) {
     leadPhoneInput.addEventListener('input', function(e) {
       var digits = e.target.value.replace(/\D/g, '').slice(0, 11);
@@ -388,6 +469,7 @@
     var payload = '🏠 Tour Areia Branca 360\n' +
                   '⚡ Ação: ' + actionType + '\n' +
                   '📍 Cômodo: ' + currentSceneName + '\n' +
+                  '🚪 Ambientes vistos: ' + visitedRoomsList.length + ' de ' + scenes.length + '\n' +
                   '🔖 Protocolo: ' + refCode + '\n' +
                   '🕒 Horário: ' + timestamp +
                   (extraDetails ? '\n👤 Cliente: ' + extraDetails : '');
@@ -406,9 +488,15 @@
   if (contactBtn) {
     contactBtn.addEventListener('click', function() {
       modalOverlay.classList.add('active');
-      if (window.clarity) {
-        window.clarity("event", "Abriu_Modal_Fercol");
-      }
+      sendEventToClarity('Abriu_Modal_Fercol');
+      sendTagToClarity('Interagiu_Botao_Fercol', 'Sim (Abriu Modal)');
+    });
+  }
+
+  if (creatorBadge) {
+    creatorBadge.addEventListener('click', function() {
+      sendEventToClarity('Clicou_Instagram_IgorRC');
+      sendTagToClarity('Interesse_Criar_Tour', 'Clicou no @igorrc93');
     });
   }
 
@@ -435,6 +523,7 @@
 
       if (!name) return;
 
+      leadConverted = true;
       var waUrl = getFercolWhatsAppUrl(name, phone);
       if (btnWaFercol) {
         btnWaFercol.href = waUrl;
@@ -448,13 +537,16 @@
         directContactBox.style.display = 'block';
       }
 
-      // 1. Notifica no seu celular pelo app ntfy
+      // 1. Notifica no seu celular pelo app ntfy (agora incluindo quantos cômodos ele viu!)
       notifyIgor('Preencheu Nome e WhatsApp e liberou contato da Fercol', name + ' | WhatsApp: ' + phone);
 
-      // 2. Registra a conversão no gráfico mensal do Microsoft Clarity
+      // 2. Grava os dados do Lead direto na ficha "Informações" do Clarity
+      sendEventToClarity('Lead_Liberou_WhatsApp_Fercol');
+      sendTagToClarity('Nivel_Interesse', '4 - LEAD CONVERTIDO (Liberou WhatsApp)');
+      sendTagToClarity('Cliente_Nome', name);
+      sendTagToClarity('Cliente_WhatsApp', phone);
+      sendTagToClarity('Protocolo_Indicacao', refCode);
       if (window.clarity) {
-        window.clarity("event", "Lead_Liberou_WhatsApp_Fercol");
-        window.clarity("set", "Protocolo_Indicacao", refCode);
         window.clarity("identify", phone, undefined, undefined, name);
       }
 
